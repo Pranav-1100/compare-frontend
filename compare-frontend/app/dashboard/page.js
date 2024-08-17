@@ -40,9 +40,9 @@ export default function Dashboard() {
         <div>
           <h2 className="text-2xl font-semibold text-primary-400 mb-4">Quick Actions</h2>
           <div className="space-y-4">
-            <Link href="/resume" className="btn-primary block text-center">Manage Resume</Link>
-            <Link href="/jobs" className="btn-primary block text-center">View Job Postings</Link>
-            <Link href="/applications" className="btn-primary block text-center">My Applications</Link>
+            <Link href="/dashboard/resume" className="btn-primary block text-center">Manage Resume</Link>
+            <Link href="/dashboard/jobs" className="btn-primary block text-center">View Job Postings</Link>
+            <Link href="/dashboard/applications" className="btn-primary block text-center">My Applications</Link>
           </div>
         </div>
         <div>
@@ -54,7 +54,7 @@ export default function Dashboard() {
         <h2 className="text-2xl font-semibold text-primary-400 mb-4">Recent Job Postings</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {jobs.slice(0, 6).map((job) => (
-            <Link key={job.id} href={`/jobs/${job.id}`}>
+            <Link key={job.id} href={`/dashboard/jobs/${job.id}`}>
               <div className="bg-gray-800 p-4 rounded-lg shadow-md hover:bg-gray-700 transition-colors">
                 <h3 className="text-xl font-semibold text-primary-400">{job.title}</h3>
                 <p className="text-gray-300">{job.company}</p>

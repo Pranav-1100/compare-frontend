@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react'
 import { resumeService } from '@/services/api'
 import BaseResumeUploader from './BaseResumeUploader'
-import CompareResumeUploader from './CompareResumeUploader'
+import CompareResumeUploader from './CompareResumeUploader.js'
 
 export default function ResumeManager() {
   const [baseResume, setBaseResume] = useState(null)

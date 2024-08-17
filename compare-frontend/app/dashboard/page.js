@@ -5,6 +5,7 @@ import { resumeService, jobService, applicationService } from '@/services/api'
 import ResumeUploader from '@/components/ResumeUploader'
 import JobList from '@/components/JobList'
 import ApplicationTracker from '@/components/ApplicationTracker'
+import ResumeManager from '@/components/ResumeManager'
 
 export default function Dashboard() {
   const [baseResume, setBaseResume] = useState(null)
@@ -33,6 +34,7 @@ export default function Dashboard() {
   return (
     <div className="space-y-8">
       <h1 className="text-3xl font-bold text-primary-400">Dashboard</h1>
+      <ResumeManager />
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
         <div className="card">
           <h2 className="text-2xl font-semibold mb-4">Your Resume</h2>

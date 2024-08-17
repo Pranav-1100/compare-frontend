@@ -1,26 +1,25 @@
 'use client'
 
 import { useState } from 'react'
-import { signIn } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
+import { authService } from '@/services/api'
 
 export default function Login() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+  const [error, setError] = useState('')
   const router = useRouter()
 
   const handleSubmit = async (e) => {
     e.preventDefault()
-    const result = await signIn('credentials', {
-      redirect: false,
-      email,
-      password,
-    })
-    if (result.ok) {
+    setError('')
+    try {
+      const response = await authService.login({ email, password })
+      localStorage.setItem('token', response.data.token)
       router.push('/dashboard')
-    } else {
-      // Handle error
+    } catch (err) {
+      setError(err.response?.data?.message || 'An error occurred during login')
     }
   }
 

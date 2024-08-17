@@ -24,7 +24,17 @@ export const authService = {
 };
 
 export const resumeService = {
-    createBaseResume: (data) => api.post('/resume/base', data),
+    createBaseResume: (data) => {
+        if (data instanceof FormData) {
+          return api.post('/resume/base', data, {
+            headers: {
+              'Content-Type': 'multipart/form-data',
+            },
+          });
+        } else {
+          return api.post('/resume/base', data);
+        }
+      },
     getBaseResume: () => api.get('/resume/base'),
     compareResume: (data) => api.post('/resume/compare', data),
     getInputResumes: () => api.get('/resume/input'),

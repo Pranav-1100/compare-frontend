@@ -68,6 +68,8 @@ export const careerService = {
 };
 
 export const applicationService = {
+    trackJobApplication: (data) => api.post('/resume/job-application', data),
+    checkApplicationStatus: (jobId) => api.get(`/resume/job-application/${jobId}/status`),
     getJobApplications: () => api.get('/resume/job-applications'),
     updateApplicationStatus: (id, status) => api.put(`/resume/job-applications/${id}`, { status }),
     withdrawApplication: (id) => api.delete(`/resume/job-applications/${id}`),

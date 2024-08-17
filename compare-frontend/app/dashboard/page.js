@@ -1,60 +1,68 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { resumeService, jobService, applicationService } from '@/services/api'
-import ResumeUploader from '@/components/ResumeUploader'
-import JobList from '@/components/JobList'
-import ApplicationTracker from '@/components/ApplicationTracker'
-import ResumeManager from '@/components/ResumeManager'
+import Link from 'next/link'
+import { authService, jobService } from '@/services/api'
+import JobPostingForm from '@/components/JobPostingForm'
 
 export default function Dashboard() {
-  const [baseResume, setBaseResume] = useState(null)
+  const [user, setUser] = useState(null)
   const [jobs, setJobs] = useState([])
-  const [applications, setApplications] = useState([])
 
   useEffect(() => {
-    fetchData()
+    fetchUser()
+    fetchJobs()
   }, [])
 
-  const fetchData = async () => {
+  const fetchUser = async () => {
     try {
-      const [resumeResponse, jobsResponse, applicationsResponse] = await Promise.all([
-        resumeService.getBaseResume(),
-        jobService.getAllJobPostings(),
-        applicationService.getJobApplications(),
-      ])
-      setBaseResume(resumeResponse.data)
-      setJobs(jobsResponse.data)
-      setApplications(applicationsResponse.data)
+      const response = await authService.getCurrentUser()
+      setUser(response.data)
     } catch (error) {
-      console.error('Error fetching dashboard data:', error)
+      console.error('Error fetching user:', error)
+    }
+  }
+
+  const fetchJobs = async () => {
+    try {
+      const response = await jobService.getAllJobPostings()
+      setJobs(response.data)
+    } catch (error) {
+      console.error('Error fetching jobs:', error)
     }
   }
 
   return (
     <div className="space-y-8">
       <h1 className="text-3xl font-bold text-primary-400">Dashboard</h1>
-      <ResumeManager />
+      {user && <p className="text-gray-300">Welcome, {user.username}!</p>}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-        <div className="card">
-          <h2 className="text-2xl font-semibold mb-4">Your Resume</h2>
-          {baseResume ? (
-            <div>
-              <p>{baseResume.content.substring(0, 200)}...</p>
-              <button className="btn-primary mt-4">Edit Resume</button>
-            </div>
-          ) : (
-            <ResumeUploader onUpload={fetchData} />
-          )}
+        <div>
+          <h2 className="text-2xl font-semibold text-primary-400 mb-4">Quick Actions</h2>
+          <div className="space-y-4">
+            <Link href="/resume" className="btn-primary block text-center">Manage Resume</Link>
+            <Link href="/jobs" className="btn-primary block text-center">View Job Postings</Link>
+            <Link href="/applications" className="btn-primary block text-center">My Applications</Link>
+          </div>
         </div>
-        <div className="card">
-          <h2 className="text-2xl font-semibold mb-4">Job Applications</h2>
-          <ApplicationTracker applications={applications} />
+        <div>
+          <h2 className="text-2xl font-semibold text-primary-400 mb-4">Create Job Posting</h2>
+          <JobPostingForm onJobPosted={fetchJobs} />
         </div>
       </div>
-      <div className="card">
-        <h2 className="text-2xl font-semibold mb-4">Job Listings</h2>
-        <JobList jobs={jobs} />
+      <div>
+        <h2 className="text-2xl font-semibold text-primary-400 mb-4">Recent Job Postings</h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          {jobs.slice(0, 6).map((job) => (
+            <Link key={job.id} href={`/jobs/${job.id}`}>
+              <div className="bg-gray-800 p-4 rounded-lg shadow-md hover:bg-gray-700 transition-colors">
+                <h3 className="text-xl font-semibold text-primary-400">{job.title}</h3>
+                <p className="text-gray-300">{job.company}</p>
+                <p className="text-gray-400">{job.location}</p>
+              </div>
+            </Link>
+          ))}
+        </div>
       </div>
     </div>
   )

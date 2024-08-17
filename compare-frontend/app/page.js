@@ -1,7 +1,36 @@
+'use client'
+
+import { useEffect, useState } from 'react'
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 import { FaRocket, FaChartLine, FaUserTie } from 'react-icons/fa'
+import { authService } from '@/services/api'
 
 export default function Home() {
+  const [isAuthenticated, setIsAuthenticated] = useState(false)
+  const router = useRouter()
+
+  useEffect(() => {
+    checkAuthentication()
+  }, [])
+
+  const checkAuthentication = async () => {
+    try {
+      await authService.getCurrentUser()
+      setIsAuthenticated(true)
+    } catch (error) {
+      setIsAuthenticated(false)
+    }
+  }
+
+  const handleGetStarted = () => {
+    if (isAuthenticated) {
+      router.push('/dashboard')
+    } else {
+      router.push('/login')
+    }
+  }
+
   return (
     <div className="text-center">
       <h1 className="text-5xl font-bold text-primary-400 mb-6">AI-Powered Resume Platform</h1>
@@ -26,12 +55,14 @@ export default function Home() {
         />
       </div>
       <div className="space-x-4">
-        <Link href="/login" className="btn-primary">
-          Get Started
-        </Link>
-        <Link href="/register" className="btn-primary bg-secondary-600 hover:bg-secondary-700">
-          Sign Up
-        </Link>
+        <button onClick={handleGetStarted} className="btn-primary">
+          {isAuthenticated ? 'Go to Dashboard' : 'Get Started'}
+        </button>
+        {!isAuthenticated && (
+          <Link href="/register" className="btn-primary bg-secondary-600 hover:bg-secondary-700">
+            Sign Up
+          </Link>
+        )}
       </div>
     </div>
   )

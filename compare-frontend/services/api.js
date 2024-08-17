@@ -68,14 +68,15 @@ export const careerService = {
 };
 
 export const applicationService = {
-    trackJobApplication: (data) => api.post('/resume/job-application', data),
     getJobApplications: () => api.get('/resume/job-applications'),
-};
+    updateApplicationStatus: (id, status) => api.put(`/resume/job-applications/${id}`, { status }),
+    withdrawApplication: (id) => api.delete(`/resume/job-applications/${id}`),
+  };
 
 export const interviewService = {
     mockInterview: (jobId, data) => api.post(`/resume/mock-interview/${jobId}`, data),
     getSalaryNegotiationAdvice: (jobId) => api.get(`/resume/salary-negotiation/${jobId}`),
-};
+ };
 
 export const networkService = {
     analyzeNetworkProfessional: (data) => api.post('/resume/network-analysis', data),

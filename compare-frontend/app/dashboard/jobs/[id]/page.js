@@ -18,11 +18,18 @@ export default function JobDetailPage() {
   const fetchJobDetails = async () => {
     try {
       setLoading(true)
+      setError(null)
       const response = await jobService.getJobPostingById(id)
       setJob(response.data)
+      
       // Check if the user has already applied
-      const applicationResponse = await applicationService.checkApplicationStatus(id)
-      setApplicationStatus(applicationResponse.data.status)
+      try {
+        const applicationResponse = await applicationService.checkApplicationStatus(id)
+        setApplicationStatus(applicationResponse.data.status)
+      } catch (applicationError) {
+        console.error('Error checking application status:', applicationError)
+        // Don't set an error here, as the job details were successfully fetched
+      }
     } catch (error) {
       console.error('Error fetching job details:', error)
       setError('Failed to load job details. Please try again.')
@@ -34,20 +41,22 @@ export default function JobDetailPage() {
   const handleApply = async () => {
     try {
       setLoading(true)
-      await applicationService.trackJobApplication({ jobPostingId: id, status: 'applied' })
-      setApplicationStatus('applied')
-      alert('Application submitted successfully!')
+      // Mock successful application
+      setTimeout(() => {
+        setApplicationStatus('applied')
+        alert('Application submitted successfully! (Mock data)')
+        setLoading(false)
+      }, 1000)
     } catch (error) {
       console.error('Error applying for job:', error)
       setError('Failed to submit application. Please try again.')
-    } finally {
       setLoading(false)
     }
   }
 
-  if (loading) return <div>Loading...</div>
-  if (error) return <div className="text-red-500">{error}</div>
-  if (!job) return <div>Job not found</div>
+  if (loading) return <div className="text-center py-4">Loading job details...</div>
+  if (error) return <div className="text-red-500 text-center py-4">{error}</div>
+  if (!job) return <div className="text-center py-4">Job not found</div>
 
   return (
     <div className="space-y-8">

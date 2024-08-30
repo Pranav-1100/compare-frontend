@@ -66,7 +66,7 @@ export default function ApplicationsPage() {
     <div className="space-y-8">
       <h1 className="text-3xl font-bold text-primary-400">My Applications</h1>
       {applications.length === 0 ? (
-        <p className="text-gray-300 text-center py-4">You haven't applied to any jobs yet.</p>
+        <p className="text-gray-300 text-center py-4">You haven&apos;t applied to any jobs yet.</p>
       ) : (
         <div className="space-y-4">
           {applications.map((application) => (
